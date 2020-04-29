@@ -1,0 +1,12 @@
+2020-04-29 10:44:29,528 - Main.py[line:75] - INFO: 读取增减额和增减幅成功，增减额:5000, 增减幅:30
+2020-04-29 10:44:29,629 - Main.py[line:130] - INFO: 月一批人命币表读取成功!
+2020-04-29 10:44:29,725 - Main.py[line:174] - INFO: 月一批外币表读取成功!
+2020-04-29 10:44:29,827 - Main.py[line:218] - INFO: 月二批人民币表读取成功!
+2020-04-29 10:44:29,923 - Main.py[line:263] - INFO: 月二批外币表读取成功!
+2020-04-29 10:44:30,056 - Main.py[line:323] - ERROR: float() argument must be a string or a number, not 'NoneType'
+2020-04-29 10:44:30,144 - Main.py[line:362] - ERROR: float() argument must be a string or a number, not 'NoneType'
+2020-04-29 10:44:30,196 - Main.py[line:399] - INFO: 季一批人民币表读取成功!
+2020-04-29 10:44:30,318 - Main.py[line:440] - ERROR: float() argument must be a string or a number, not 'NoneType'
+2020-04-29 10:44:30,463 - Main.py[line:528] - ERROR: float() argument must be a string or a number, not 'NoneType'
+2020-04-29 10:44:30,543 - Main.py[line:565] - INFO: 3304表读取成功!
+2020-04-29 10:44:30,628 - Main.py[line:625] - ERROR: float() argument must be a string or a number, not 'NoneType'

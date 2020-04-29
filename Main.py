@@ -1,5 +1,6 @@
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font, colors
+import xlwings as xw
 import logging
 import time
 import os
@@ -50,8 +51,6 @@ class ProcessData:
 
     def __init__(self, file_path):
         self.file_path = file_path
-        self.max_rows = 1
-        self.max_columns = 1
         self.logger = generate_logging()
         self.wb = load_workbook(self.file_path, keep_vba=True, data_only=True)
         self.sheet_names = self.wb.sheetnames
@@ -77,13 +76,13 @@ class ProcessData:
 
             if self.limit is not None and self.range is not None:
                 self.logger.info("读取增减额和增减幅成功，增减额:{0}, 增减幅:{1}".format(self.limit, self.range))
-                return True
+                return [True, '增减额:{0}, 增减幅:{1}'.format(self.limit, self.range)]
             else:
                 self.logger.error("读取增减额和增减幅失败, 失败原因:当前单元格未包含数值, 增减额:{0}, 增减幅:{1}".format(self.limit, self.range))
-                return False
+                return [False, '增减额:{0}, 增减幅:{1}'.format(self.limit, self.range)]
         except ValueError as reason:
             self.logger.error(str(reason))
-            return False
+            return [False, '增减额:{0}, 增减幅:{1}'.format(self.limit, self.range)]
 
     def read_month_first_rmb(self):
         """
@@ -642,8 +641,12 @@ class ProcessData:
         self.read_season_sum()
 
     def write_data_to_sheet(self, sheet_name=None):
+        self.wb = load_workbook(self.file_path, data_only=False, keep_vba=True)
         if sheet_name is None:
             sheet_name = '汇总'
+
+        if sheet_name in self.sheet_names:
+            self.wb.remove(self.wb[sheet_name])
 
         ws = self.wb.create_sheet()
         ws.title = sheet_name
@@ -664,75 +667,6 @@ class ProcessData:
     @property
     def get_row_number(self):
         return len(self.need_shift_data) + 1
-
-    def test_row(self):
-        print(self.wb[self.sheet_names[2]]['E'])
-
-    def read_font_color(self):
-        sheet_names = self.wb.sheetnames
-        for sheet_name in sheet_names:
-            print(sheet_name)
-            if sheet_name not in ['说明', '数据库', '增减设定']:
-                self.max_rows = self.wb[sheet_name].max_row
-                self.max_columns = self.wb[sheet_name].max_column
-                self.read_red_font_data_from_sheet(sheet_name)
-
-    def read_red_font_data_from_sheet(self, sheet_name):
-        # 获取表头条目
-        head_data = []
-        head_item_count = 0
-        for column in range(1, self.max_columns + 1):
-            if column == 1:
-                if self.wb[sheet_name].cell(row=1, column=column).value is None:
-                    head_data.append(' ')
-                else:
-                    head_data.append(self.wb[sheet_name].cell(row=1, column=column).value)
-            else:
-                if self.wb[sheet_name].cell(row=1, column=column).value is None:
-                    break
-                else:
-                    head_data.append(self.wb[sheet_name].cell(row=1, column=column).value)
-            head_item_count += 1
-        self.need_shift_data.append(head_data)
-        self.red_place.append([])
-
-        # 处理表中红字数据
-        sheet_data = []
-        red = []
-        for row in range(2, self.max_rows + 1):
-            do_not_sign = False
-            sheet_data = []
-            red = []
-            for column in range(1, head_item_count + 1):
-                if self.wb[sheet_name].cell(row=row, column=column).value is None:
-                    sheet_data.append(' ')
-                else:
-                    sheet_data.append(self.wb[sheet_name].cell(row=row, column=column).value)
-
-                if self.wb[sheet_name].cell(row=row, column=column).font.color is not None:
-                    if self.wb[sheet_name].cell(row=row, column=column).font.color.rgb == 'FFFF0000':
-                        red.append(column)
-                        if column != head_item_count:
-                            for column_second in range(column + 1, head_item_count + 1):
-                                if self.wb[sheet_name].cell(row=row, column=column_second).font.color is not None:
-                                    if self.wb[sheet_name].cell(row=row,
-                                                                column=column_second).font.color.rgb == 'FFFF0000':
-                                        do_not_sign = True
-                                    else:
-                                        pass
-                                else:
-                                    pass
-
-                            if not do_not_sign:
-                                self.need_shift_data.append(sheet_data)
-                                sheet_data = []
-                                self.red_place.append(red)
-                                red = []
-                        else:
-                            self.need_shift_data.append(sheet_data)
-                            sheet_data = []
-                            self.red_place.append(red)
-                            red = []
 
     @staticmethod
     def compare_value(str_value, int_value):
