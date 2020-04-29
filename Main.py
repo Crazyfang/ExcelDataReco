@@ -3,6 +3,8 @@ from openpyxl.styles import Font, colors
 import logging
 import time
 import os
+from win32com.client import Dispatch
+import win32com.client
 
 
 def generate_logging():
@@ -752,14 +754,162 @@ class ProcessData:
         return self.need_shift_data
 
 
+class TestClass:
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.excel = win32com.client.Dispatch('Excel.Application')
+        self.excel.Visible = False
+        self.wb = self.excel.Workbooks.Open(self.file_path)
+        self.need_shift_data = []
+        self.red_place = []
+        self.limit = None
+        self.range = None
+        self.logger = generate_logging()
+        self.ws = None
+
+    def read_variable(self, sheet_name=None):
+        """
+        Read the limit and range value from sheet.If the sheet_name param is none, the function will use the default
+        sequence number
+        :return
+        True/False-The sign of the limit and range value get successfully or not.
+        """
+        try:
+            if sheet_name is None:
+                self.limit = self.wb.Worksheets['增减设定'].Cells(2, 3).Value
+                self.range = self.wb.Worksheets['增减设定'].Cells(2, 4).Value
+            else:
+                self.limit = self.wb.Worksheets[sheet_name].Cells(2, 3).Value
+                self.range = self.wb.Worksheets[sheet_name].Cells(2, 4).Value
+
+            if self.limit is not None and self.range is not None:
+                self.logger.info("读取增减额和增减幅成功，增减额:{0}, 增减幅:{1}".format(self.limit, self.range))
+                return True
+            else:
+                self.logger.error("读取增减额和增减幅失败, 失败原因:当前单元格未包含数值, 增减额:{0}, 增减幅:{1}".format(self.limit, self.range))
+                return False
+        except ValueError as reason:
+            self.logger.error(str(reason))
+            return False
+
+    def read_month_first_rmb(self):
+        """
+        月一批人命币Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['月一批人民币'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['月一批人民币'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    if row_index != 809:
+                        if self.compare_value(list_item[7], self.limit):
+                            try:
+                                float(list_item[8])
+                                list_item[8] = round(list_item[8])
+                            except ValueError:
+                                pass
+                            self.red_place.append([self.get_row_number, 8])
+                            if self.compare_value(list_item[8], self.range):
+                                self.red_place.append([self.get_row_number, 9])
+                            self.need_shift_data.append(list_item)
+                        elif self.compare_value(list_item[8], self.range):
+                            try:
+                                float(list_item[8])
+                                list_item[8] = round(list_item[8])
+                            except ValueError:
+                                pass
+                            self.red_place.append([self.get_row_number, 9])
+                            self.need_shift_data.append(list_item)
+                    else:
+                        if self.compare_value(list_item[8], self.limit):
+                            list_item[8] = round(list_item[8])
+                            self.red_place.append([self.get_row_number, 9])
+                            self.need_shift_data.append(list_item)
+            self.logger.info('月一批人命币表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def write_data_to_sheet(self, sheet_name=None):
+        if sheet_name is None:
+            sheet_name = '汇总'
+
+        try:
+            self.ws = self.wb.Worksheets[sheet_name]
+            self.ws.Rows('1:2000').Delete()
+        except Exception as reason:
+            self.logger.error(str(reason))
+            self.wb.Worksheets.Add().Name = sheet_name
+            self.ws = self.wb.Worksheets(sheet_name)
+
+        # 写入数据
+        for row in range(1, len(self.need_shift_data) + 1):
+            for column in range(1, len(self.need_shift_data[row - 1]) + 1):
+                self.ws.Cells(row, column).Value = self.need_shift_data[row - 1][column - 1]
+
+        # 改变指定单元格文字
+        for item in self.red_place:
+            if item:
+                self.ws.Cells(item[0], item[1]).Font.Color = -16776961
+
+        self.wb.Save()
+        self.wb.Close()
+
+    def test(self):
+        self.wb.Worksheets.Add().Name = '汇总'
+        ws = self.wb.Worksheets('汇总')
+        ws.Cells(1, 1).Font.Color = -16776961
+        ws.Cells(1, 1).Value = '测试'
+        self.wb.Save()
+        self.wb.Close()
+
+    def main_func(self):
+        self.read_variable()
+        self.read_month_first_rmb()
+        self.write_data_to_sheet()
+
+    @staticmethod
+    def compare_value(str_value, int_value):
+        if str_value is None:
+            return False
+        else:
+            try:
+                str_value = int(str_value)
+                int_value = int(int_value)
+                if str_value >= int_value or str_value <= -int_value:
+                    return True
+                else:
+                    return False
+            except ValueError:
+                return False
+
+    @property
+    def get_row_number(self):
+        return len(self.need_shift_data) + 1
+
+
 if __name__ == '__main__':
-    pd = ProcessData('./（镇海）金融统计报表管理系统（农合用）20200413季报.xlsm')
-    # pd.test_row()
-    pd.read_variable()
+    pd = TestClass('C:\\Users\\Administrator\\Documents\\GitHub\\ExcelDataReco\\（镇海）金融统计报表管理系统（农合用）20200413季报.xlsm')
     pd.main_func()
-    print(len(pd.print_data))
-    print(pd.print_data)
-    pd.write_data_to_sheet()
+    # pd = ProcessData('./（镇海）金融统计报表管理系统（农合用）20200413季报.xlsm')
+    # pd.test_row()
+    # pd.read_variable()
+    # pd.main_func()
+    # print(len(pd.print_data))
+    # print(pd.print_data)
+    # pd.write_data_to_sheet()
     # pd.read_font_color()
     # print(pd.print_data)
     # print(pd.red_place)
