@@ -776,6 +776,499 @@ class TestClass:
         except Exception as reason:
             self.logger.error(str(reason))
 
+    def read_month_first_foreign(self):
+        """
+        月一批外币Sheet表
+        :return:
+        """
+        item_all = []
+        item_row = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['月一批外币'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['月一批外币'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    if self.compare_value(list_item[7], self.limit):
+                        try:
+                            float(list_item[8])
+                            list_item[8] = round(list_item[8])
+                        except ValueError:
+                            pass
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        try:
+                            float(list_item[8])
+                            list_item[8] = round(list_item[8])
+                        except ValueError:
+                            pass
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('月一批外币表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_month_second_rmb(self):
+        """
+        月二批人民币Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['月二批人民币'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['月二批人民币'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    if self.compare_value(list_item[7], self.limit):
+                        try:
+                            float(list_item[8])
+                            list_item[8] = round(list_item[8])
+                        except ValueError:
+                            pass
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        try:
+                            float(list_item[8])
+                            list_item[8] = round(list_item[8])
+                        except ValueError:
+                            pass
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('月二批人民币表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_month_second_foreign(self):
+        """
+        月二批外币Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['月二批外币'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['月二批人民币'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    if self.compare_value(list_item[7], self.limit):
+                        try:
+                            float(list_item[8])
+                            list_item[8] = round(list_item[8])
+                        except ValueError:
+                            pass
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        try:
+                            float(list_item[8])
+                            list_item[8] = round(list_item[8])
+                        except ValueError:
+                            pass
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+
+            self.logger.info('月二批外币表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_3410(self):
+        """
+        3410 Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['3410'].usedrange.rows.count + 1):
+                for column in range(1, 15):
+                    item_row.append(self.wb.Worksheets['3410'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                        float(list_item[12])
+                        list_item[12] = round(list_item[12])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[11], self.limit):
+                        self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[12], self.range):
+                        self.red_place.append([self.get_row_number, 13])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('3410表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_3414(self):
+        """
+        3414 Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['3414'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['3414'].cell(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('3414表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_season_first_rmb(self):
+        """
+        季一批人民币
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['季一批人民币'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['季一批人民币'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('季一批人民币表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_season_first_foreign(self):
+        """
+        季一批外币Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['季一批外币'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['季一批外币'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('季一批外币表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_3301(self):
+        """
+        3301 Sheet表
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['3301'].usedrange.rows.count + 1):
+                for column in range(1, 22):
+                    item_row.append(self.wb.Worksheets['3301'].Cells(row, column).value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                        float(list_item[12])
+                        list_item[12] = round(list_item[12])
+                        float(list_item[16])
+                        list_item[16] = round(list_item[16])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        if self.compare_value(list_item[15], self.limit):
+                            self.red_place.append([self.get_row_number, 16])
+                        if self.compare_value(list_item[16], self.range):
+                            self.red_place.append([self.get_row_number, 17])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        if self.compare_value(list_item[15], self.limit):
+                            self.red_place.append([self.get_row_number, 16])
+                        if self.compare_value(list_item[16], self.range):
+                            self.red_place.append([self.get_row_number, 17])
+
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[11], self.limit):
+                        self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        if self.compare_value(list_item[15], self.limit):
+                            self.red_place.append([self.get_row_number, 16])
+                        if self.compare_value(list_item[16], self.range):
+                            self.red_place.append([self.get_row_number, 17])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[12], self.range):
+                        self.red_place.append([self.get_row_number, 13])
+                        if self.compare_value(list_item[15], self.limit):
+                            self.red_place.append([self.get_row_number, 16])
+                        if self.compare_value(list_item[16], self.range):
+                            self.red_place.append([self.get_row_number, 17])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[15], self.limit):
+                        self.red_place.append([self.get_row_number, 16])
+                        if self.compare_value(list_item[16], self.range):
+                            self.red_place.append([self.get_row_number, 17])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[16], self.limit):
+                        self.red_place.append([self.get_row_number, 17])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('3301表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_3304(self):
+        """
+        3304 Sheet
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['3304'].usedrange.rows.count + 1):
+                for column in range(1, 10):
+                    item_row.append(self.wb.Worksheets['3304'].Cells(row, column).value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('3304表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
+    def read_season_sum(self):
+        """
+        季报含发生额
+        :return:
+        """
+        item_row = []
+        item_all = []
+
+        try:
+            # 先从Sheet表中读取数据至item_all数组
+            for row in range(1, self.wb.Worksheets['季报含发生额'].usedrange.rows.count + 1):
+                for column in range(1, 15):
+                    item_row.append(self.wb.Worksheets['季报含发生额'].Cells(row, column).Value)
+                item_all.append(item_row)
+                item_row = []
+
+            # 对item_all数组进行条件格式的验证
+            for row_index, list_item in enumerate(item_all):
+                if row_index == 0:
+                    self.red_place.append([])
+                    self.need_shift_data.append(list_item)
+                else:
+                    try:
+                        float(list_item[8])
+                        list_item[8] = round(list_item[8])
+                        float(list_item[12])
+                        list_item[12] = round(list_item[12])
+                    except ValueError:
+                        pass
+                    if self.compare_value(list_item[7], self.limit):
+                        self.red_place.append([self.get_row_number, 8])
+                        if self.compare_value(list_item[8], self.range):
+                            self.red_place.append([self.get_row_number, 9])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[8], self.range):
+                        self.red_place.append([self.get_row_number, 9])
+                        if self.compare_value(list_item[11], self.limit):
+                            self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[11], self.limit):
+                        self.red_place.append([self.get_row_number, 12])
+                        if self.compare_value(list_item[12], self.range):
+                            self.red_place.append([self.get_row_number, 13])
+                        self.need_shift_data.append(list_item)
+                    elif self.compare_value(list_item[12], self.range):
+                        self.red_place.append([self.get_row_number, 13])
+                        self.need_shift_data.append(list_item)
+            self.logger.info('季报含发生额表读取成功!')
+        except Exception as reason:
+            self.logger.error(str(reason))
+
     def write_data_to_sheet(self, sheet_name=None):
         if sheet_name is None:
             sheet_name = '汇总'
@@ -812,6 +1305,16 @@ class TestClass:
     def main_func(self):
         self.read_variable()
         self.read_month_first_rmb()
+        self.read_month_first_foreign()
+        self.read_month_second_rmb()
+        self.read_month_second_foreign()
+        self.read_3410()
+        self.read_3414()
+        self.read_season_first_rmb()
+        self.read_season_first_foreign()
+        self.read_3301()
+        self.read_3304()
+        self.read_season_sum()
         self.write_data_to_sheet()
 
     @staticmethod
